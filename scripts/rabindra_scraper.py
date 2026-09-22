@@ -32,6 +32,27 @@ class RabidraScraper:
         })
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
+        self.failure_count = 0
+        self.failures_path = self.output_dir / "failures.jsonl"
+
+    def _record_failure(self, reason: str, collection: str = "", poem: str = "",
+                        url: str = "", detail: str = "") -> None:
+        """Append one failure record to failures.jsonl"""
+        record = {
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "reason": reason,
+            "collection": collection,
+            "poem": poem,
+            "url": url,
+        }
+        if detail:
+            record["detail"] = detail
+
+        with open(self.failures_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+        self.failure_count += 1
+        logger.warning("  Recorded failure: %s %s", reason, url or poem or collection)
 
     def fetch_page(self, url: str, retries: int = 3) -> Optional[BeautifulSoup]:
         """Fetch and parse a page with retry logic"""
@@ -50,38 +71,42 @@ class RabidraScraper:
 
             time.sleep(RabindraScraperConfig.DELAY_BETWEEN_REQUESTS)
 
+    def _paragraph_text(self, element) -> str:
+        """Turn one HTML block into poem text the way a browser would.
+
+        Source files wrap long lines with real newline characters inside <p>.
+        Browsers collapse those, plus other regular whitespace, to a single
+        space. get_text() keeps them, which showed up as extra poem lines.
+        &nbsp; is real indentation and is not collapsed.
+        <br> is an intentional line break.
+        """
+        for br in element.find_all('br'):
+            br.replace_with('\x00BR\x00')
+
+        text = element.get_text(separator='')
+        text = text.replace('\xa0', '\x00NBSP\x00')
+
+        lines = []
+        for part in text.split('\x00BR\x00'):
+            part = re.sub(r'[ \t\r\n\f]+', ' ', part)
+            part = part.strip(' ')
+            part = part.replace('\x00NBSP\x00', ' ')
+            if not part.strip():
+                lines.append('')
+            else:
+                lines.append(part.rstrip())
+        return '\n'.join(lines)
+
     def extract_poem_text(self, soup: BeautifulSoup) -> str:
         """Extract poem content from page, preserving line breaks and indentation"""
         # First, look for the poem in div#kobita (kobita = poem in Bengali)
         kobita_div = soup.find('div', id='kobita')
         if kobita_div:
-            # Replace <br> tags with newlines before extracting text
-            for br in kobita_div.find_all('br'):
-                br.replace_with('\n')
-
-            # Extract text from all <p> tags, preserving internal line breaks and indentation
             paragraphs = kobita_div.find_all('p')
             if paragraphs:
-                text_parts = []
-                for p in paragraphs:
-                    # Get text with separator for internal line breaks
-                    # get_text() automatically converts &nbsp; to spaces
-                    text = p.get_text(separator='\n')
+                return '\n'.join(self._paragraph_text(p) for p in paragraphs).strip('\n')
 
-                    # Strip only trailing whitespace per line, preserve leading (indentation)
-                    lines = text.split('\n')
-                    processed_lines = [line.rstrip() for line in lines]
-
-                    # Join and remove empty lines at start/end but preserve internal structure
-                    combined = '\n'.join(processed_lines).strip()
-                    if combined:  # Only add non-empty paragraphs
-                        text_parts.append(combined)
-
-                return '\n'.join(text_parts)
-            else:
-                # If no <p> tags, just get all text preserving indentation
-                text = kobita_div.get_text(separator='\n')
-                return text.strip()
+            return self._paragraph_text(kobita_div).strip()
 
         # Fallback: try other selectors
         content_div = None
@@ -147,12 +172,27 @@ class RabidraScraper:
 
             soup = self.fetch_page(current_url)
             if not soup:
+                self._record_failure(
+                    reason="fetch_failed" if page_count == 1 else "page_fetch_failed",
+                    collection=collection_name,
+                    poem=poem_num,
+                    url=current_url,
+                    detail=f"page {page_count}",
+                )
                 break
 
             # Extract text
             text = self.extract_poem_text(soup)
             if text:
                 all_text.append(text)
+            else:
+                self._record_failure(
+                    reason="empty_page",
+                    collection=collection_name,
+                    poem=poem_num,
+                    url=current_url,
+                    detail=f"page {page_count}",
+                )
 
             # Check pagination
             current_page, total_pages, has_next = self.detect_pagination_info(soup)
@@ -178,6 +218,12 @@ class RabidraScraper:
 
         if not all_text:
             logger.warning(f"  No text extracted for poem {poem_num}")
+            self._record_failure(
+                reason="empty_text",
+                collection=collection_name,
+                poem=poem_num,
+                url=poem_url,
+            )
             return None
 
         return {
@@ -195,6 +241,11 @@ class RabidraScraper:
 
         soup = self.fetch_page(collection_url)
         if not soup:
+            self._record_failure(
+                reason="collection_fetch_failed",
+                collection=collection_name,
+                url=collection_url,
+            )
             return []
 
         poems = []
@@ -225,6 +276,13 @@ class RabidraScraper:
                      and len(link.get_text(strip=True)) > 1]  # Exclude single-char links
 
         logger.info(f"  Found {len(poem_links)} poems")
+        if not poem_links:
+            self._record_failure(
+                reason="no_poem_links",
+                collection=collection_name,
+                url=collection_url,
+            )
+            return []
 
         if limit:
             poem_links = poem_links[:limit]
@@ -249,6 +307,10 @@ class RabidraScraper:
         logger.info("Fetching index...")
         soup = self.fetch_page(RabindraScraperConfig.POETRY_INDEX_URL)
         if not soup:
+            self._record_failure(
+                reason="index_fetch_failed",
+                url=RabindraScraperConfig.POETRY_INDEX_URL,
+            )
             return []
 
         links = soup.find_all('a', href=re.compile(r'subcatid='))
@@ -258,6 +320,11 @@ class RabidraScraper:
                       for link in links]
 
         logger.info(f"Found {len(collections)} collections\n")
+        if not collections:
+            self._record_failure(
+                reason="no_collections",
+                url=RabindraScraperConfig.POETRY_INDEX_URL,
+            )
         return collections
 
     def save_collection(self, collection_name: str, poems: List[Dict]):
@@ -306,6 +373,8 @@ class RabidraScraper:
                 logger.info(f"✓ {collection_name}: {len(poems)} poems\n")
 
         self.save_summary(summary)
+        if self.failure_count:
+            logger.warning(f"Recorded {self.failure_count} failures in {self.failures_path}")
         logger.info(f"✓ Complete! Output: {self.output_dir}")
 
 def main():
