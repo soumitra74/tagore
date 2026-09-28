@@ -11,6 +11,7 @@ import json
 import time
 from pathlib import Path
 from typing import Dict, List, Optional
+from urllib.parse import urljoin
 import logging
 import re
 
@@ -34,6 +35,10 @@ class RabidraScraper:
         self.output_dir.mkdir(exist_ok=True)
         self.failure_count = 0
         self.failures_path = self.output_dir / "failures.jsonl"
+        self.audit_enabled = False
+        self.audit_screenshots = True
+        self.audit_results: List[Dict] = []
+        self._live = None
 
     def _record_failure(self, reason: str, collection: str = "", poem: str = "",
                         url: str = "", detail: str = "") -> None:
@@ -97,16 +102,45 @@ class RabidraScraper:
                 lines.append(part.rstrip())
         return '\n'.join(lines)
 
+    def _kobita_divs(self, soup: BeautifulSoup) -> List:
+        """Poem body can be split across #kobita, #kobita2, #kobita3."""
+        found = []
+        seen = set()
+        for div in soup.find_all('div', id=re.compile(r'^kobita\d*$')):
+            div_id = div.get('id')
+            if not div_id or div_id in seen:
+                continue
+            seen.add(div_id)
+            found.append(div)
+        found = [
+            div for div in found
+            if not any(
+                getattr(parent, 'get', None) and parent.get('id') in seen
+                for parent in div.parents
+            )
+        ]
+
+        def sort_key(div) -> int:
+            match = re.match(r'^kobita(\d*)$', div.get('id') or '')
+            return int(match.group(1) or 0) if match else 0
+
+        return sorted(found, key=sort_key)
+
+    def _container_text(self, element) -> str:
+        """A #kobita block is either one line per <p>, or <br>-separated text."""
+        if element.find_all('br'):
+            return self._paragraph_text(element)
+        paragraphs = element.find_all('p')
+        if paragraphs:
+            return '\n'.join(self._paragraph_text(p) for p in paragraphs)
+        return self._paragraph_text(element)
+
     def extract_poem_text(self, soup: BeautifulSoup) -> str:
         """Extract poem content from page, preserving line breaks and indentation"""
-        # First, look for the poem in div#kobita (kobita = poem in Bengali)
-        kobita_div = soup.find('div', id='kobita')
-        if kobita_div:
-            paragraphs = kobita_div.find_all('p')
-            if paragraphs:
-                return '\n'.join(self._paragraph_text(p) for p in paragraphs).strip('\n')
-
-            return self._paragraph_text(kobita_div).strip()
+        kobita_divs = self._kobita_divs(soup)
+        if kobita_divs:
+            parts = [self._container_text(div).strip('\n') for div in kobita_divs]
+            return '\n'.join(part for part in parts if part).strip('\n')
 
         # Fallback: try other selectors
         content_div = None
@@ -159,6 +193,24 @@ class RabidraScraper:
 
         return (1, 1, False)
 
+    def next_poem_page_url(self, soup: BeautifulSoup, current_url: str) -> Optional[str]:
+        """Follow পরবর্তী to the next page of this poem.
+
+        The site does not print ASCII '1/2'. Last page has পূর্ববর্তী/প্রথম
+        but no পরবর্তী, so this will not walk into the next poem.
+        """
+        for link in soup.find_all('a'):
+            text = link.get_text()
+            if 'পরবর্তী' not in text and 'next' not in text.lower():
+                continue
+            href = link.get('href')
+            if not href:
+                continue
+            next_url = urljoin(RabindraScraperConfig.BASE_URL + '/', href)
+            if next_url.rstrip('/') != current_url.rstrip('/'):
+                return next_url
+        return None
+
     def scrape_poem(self, poem_url: str, poem_num: str, collection_name: str) -> Optional[Dict]:
         """Scrape a single poem, handling multiple pages"""
         logger.info(f"  Poem {poem_num}...")
@@ -166,8 +218,12 @@ class RabidraScraper:
         all_text = []
         current_url = poem_url
         page_count = 0
+        seen_urls = set()
 
         while current_url and page_count < 10:  # Safety limit
+            if current_url in seen_urls:
+                break
+            seen_urls.add(current_url)
             page_count += 1
 
             soup = self.fetch_page(current_url)
@@ -194,27 +250,11 @@ class RabidraScraper:
                     detail=f"page {page_count}",
                 )
 
-            # Check pagination
-            current_page, total_pages, has_next = self.detect_pagination_info(soup)
-
-            # Try to find next page link
-            next_url = None
-            if has_next:
-                # Try query parameter approach
-                if '?' in current_url:
-                    next_url = current_url.split('?')[0] + f"?page={current_page}"
-                else:
-                    next_url = current_url + f"?page={current_page}"
-
-                # Also try to find explicit next link
-                for link in soup.find_all('a'):
-                    if any(text in link.get_text().lower() for text in ['next', 'পরবর্তী']):
-                        href = link.get('href')
-                        if href:
-                            next_url = href if href.startswith('http') else RabindraScraperConfig.BASE_URL + href
-                            break
-
-            current_url = next_url if has_next else None
+            next_url = self.next_poem_page_url(soup, current_url)
+            if next_url:
+                logger.info(f"  Multi-page poem: fetching page {page_count + 1} {next_url}")
+                time.sleep(RabindraScraperConfig.DELAY_BETWEEN_REQUESTS)
+            current_url = next_url
 
         if not all_text:
             logger.warning(f"  No text extracted for poem {poem_num}")
@@ -234,9 +274,64 @@ class RabidraScraper:
             "content": '\n---PAGE BREAK---\n'.join(all_text) if page_count > 1 else all_text[0]
         }
 
+    def _write_audit_report(self) -> None:
+        if not self.audit_results:
+            return
+        report = {
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "checked": len(self.audit_results),
+            "matched": sum(1 for r in self.audit_results if r["status"] == "match"),
+            "mismatched": sum(1 for r in self.audit_results if r["status"] == "mismatch"),
+            "page_count_mismatch": sum(
+                1 for r in self.audit_results if not r.get("page_count_ok", True)
+            ),
+            "errors": sum(1 for r in self.audit_results if r["status"] == "error"),
+            "results": self.audit_results,
+        }
+        path = self.output_dir / "audit_report.json"
+        path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    def _audit_poem(self, poem: Dict) -> None:
+        if not self.audit_enabled or not self._live:
+            return
+        from audit_poetry import audit_one
+
+        result = audit_one(
+            self._live,
+            self,
+            poem,
+            self.output_dir / "audit_screenshots",
+            self.audit_screenshots,
+        )
+        self.audit_results.append(result)
+        self._write_audit_report()
+        if result["status"] == "match":
+            logger.info("  Audit OK: %s", poem.get("poem_number"))
+        else:
+            logger.warning("  Audit %s: %s", result["status"], poem.get("poem_number"))
+
+    def _with_audit_session(self, fn):
+        if not self.audit_enabled or self._live is not None:
+            return fn()
+        from audit_poetry import LiveKobita
+
+        with LiveKobita() as live:
+            self._live = live
+            try:
+                return fn()
+            finally:
+                self._write_audit_report()
+                self._live = None
+
     def scrape_collection(self, collection_url: str, collection_name: str,
                          limit: Optional[int] = None) -> List[Dict]:
         """Scrape poems from a collection"""
+        return self._with_audit_session(
+            lambda: self._scrape_collection(collection_url, collection_name, limit)
+        )
+
+    def _scrape_collection(self, collection_url: str, collection_name: str,
+                           limit: Optional[int] = None) -> List[Dict]:
         logger.info(f"Scraping: {collection_name}")
 
         soup = self.fetch_page(collection_url)
@@ -293,6 +388,7 @@ class RabidraScraper:
             poem_data = self.scrape_poem(poem_url, poem_num, collection_name)
             if poem_data:
                 poems.append(poem_data)
+                self._audit_poem(poem_data)
 
             time.sleep(RabindraScraperConfig.DELAY_BETWEEN_REQUESTS)
 
@@ -351,6 +447,12 @@ class RabidraScraper:
     def scrape_all(self, specific_collection: Optional[str] = None,
                    limit_per_collection: Optional[int] = None):
         """Scrape all or specific collections"""
+        return self._with_audit_session(
+            lambda: self._scrape_all(specific_collection, limit_per_collection)
+        )
+
+    def _scrape_all(self, specific_collection: Optional[str] = None,
+                    limit_per_collection: Optional[int] = None):
         collections = self.get_all_collections()
         if not collections:
             logger.error("No collections found")
@@ -385,11 +487,17 @@ def main():
     parser.add_argument('--limit', type=int, help='Limit poems per collection (for testing)')
     parser.add_argument('--delay', type=float, default=RabindraScraperConfig.DELAY_BETWEEN_REQUESTS,
                        help='Delay between requests')
+    parser.add_argument('--audit', action='store_true',
+                       help='After each poem, compare it to live #kobita innerText')
+    parser.add_argument('--no-audit-screenshot', action='store_true',
+                       help='With --audit, skip PNG captures on mismatch')
 
     args = parser.parse_args()
     RabindraScraperConfig.DELAY_BETWEEN_REQUESTS = args.delay
 
     scraper = RabidraScraper(output_dir=args.output)
+    scraper.audit_enabled = args.audit
+    scraper.audit_screenshots = not args.no_audit_screenshot
     scraper.scrape_all(specific_collection=args.collection,
                        limit_per_collection=args.limit)
 

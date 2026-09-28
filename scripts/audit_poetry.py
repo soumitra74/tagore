@@ -120,10 +120,23 @@ class LiveKobita:
 
     def open(self, url: str) -> None:
         self.page.goto(url, wait_until="domcontentloaded", timeout=30000)
-        self.page.locator("#kobita").wait_for(state="visible", timeout=15000)
+        self.page.locator('div[id^="kobita"]').first.wait_for(state="visible", timeout=15000)
 
     def inner_text(self) -> str:
-        return self.page.locator("#kobita").inner_text()
+        return self.page.evaluate(
+            """() => {
+                const nodes = [...document.querySelectorAll('div[id^="kobita"]')];
+                const seen = new Set();
+                const parts = [];
+                for (const node of nodes) {
+                    if (!node.id || seen.has(node.id)) continue;
+                    seen.add(node.id);
+                    const text = node.innerText;
+                    if (text && text.trim()) parts.push(text);
+                }
+                return parts.join('\\n');
+            }"""
+        )
 
     def next_page_url(self, current_url: str) -> Optional[str]:
         link = self.page.locator("a").filter(has_text=re.compile(r"পরবর্তী|next", re.I))
@@ -136,7 +149,34 @@ class LiveKobita:
 
     def screenshot_kobita(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        self.page.locator("#kobita").screenshot(path=str(path))
+        locators = self.page.locator('div[id^="kobita"]')
+        if locators.count() == 1:
+            locators.first.screenshot(path=str(path))
+            return
+        box = self.page.evaluate(
+            """() => {
+                const nodes = [...document.querySelectorAll('div[id^="kobita"]')];
+                const seen = new Set();
+                let x1 = Infinity, y1 = Infinity, x2 = 0, y2 = 0, found = false;
+                for (const node of nodes) {
+                    if (!node.id || seen.has(node.id)) continue;
+                    seen.add(node.id);
+                    const r = node.getBoundingClientRect();
+                    if (r.width === 0 && r.height === 0) continue;
+                    found = true;
+                    x1 = Math.min(x1, r.x);
+                    y1 = Math.min(y1, r.y);
+                    x2 = Math.max(x2, r.x + r.width);
+                    y2 = Math.max(y2, r.y + r.height);
+                }
+                if (!found) return null;
+                return {x: x1, y: y1, width: x2 - x1, height: y2 - y1};
+            }"""
+        )
+        if box:
+            self.page.screenshot(path=str(path), clip=box)
+        else:
+            locators.first.screenshot(path=str(path))
 
     def screenshot_saved_text(self, text: str, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -186,7 +226,7 @@ def audit_poems(
 
     with LiveKobita() as live:
         for poem in poems:
-            result = _audit_one(live, scraper, poem, screenshot_dir, screenshots)
+            result = audit_one(live, scraper, poem, screenshot_dir, screenshots)
             results.append(result)
             time.sleep(delay)
 
@@ -212,7 +252,7 @@ def audit_poems(
     return report
 
 
-def _audit_one(
+def audit_one(
     live: LiveKobita,
     scraper: RabidraScraper,
     poem: Dict,
