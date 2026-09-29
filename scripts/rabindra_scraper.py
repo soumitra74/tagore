@@ -18,6 +18,34 @@ import re
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+
+def atomic_write_text(path: Path, text: str) -> None:
+    """Write text by replacing the destination only after the temp file is complete."""
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    tmp.replace(path)
+
+
+def select_collections(
+    collections: List[tuple],
+    specific: Optional[str] = None,
+    resume_from: Optional[str] = None,
+) -> List[tuple]:
+    """Filter index order. --resume-from keeps that collection and everything after."""
+    selected = collections
+    if resume_from:
+        needle = resume_from.lower()
+        start = next(
+            (index for index, (name, _) in enumerate(selected) if needle in name.lower()),
+            None,
+        )
+        selected = selected[start:] if start is not None else []
+    if specific:
+        needle = specific.lower()
+        selected = [(name, url) for name, url in selected if needle in name.lower()]
+    return selected
+
+
 class RabindraScraperConfig:
     BASE_URL = "https://rabindra-rachanabali.nltr.org"
     POETRY_INDEX_URL = f"{BASE_URL}/node/10609"
@@ -289,7 +317,7 @@ class RabidraScraper:
             "results": self.audit_results,
         }
         path = self.output_dir / "audit_report.json"
-        path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+        atomic_write_text(path, json.dumps(report, ensure_ascii=False, indent=2))
 
     def _audit_poem(self, poem: Dict) -> None:
         if not self.audit_enabled or not self._live:
@@ -445,24 +473,32 @@ class RabidraScraper:
             json.dump(summary, f, ensure_ascii=False, indent=2)
 
     def scrape_all(self, specific_collection: Optional[str] = None,
-                   limit_per_collection: Optional[int] = None):
+                   limit_per_collection: Optional[int] = None,
+                   resume_from: Optional[str] = None):
         """Scrape all or specific collections"""
         return self._with_audit_session(
-            lambda: self._scrape_all(specific_collection, limit_per_collection)
+            lambda: self._scrape_all(specific_collection, limit_per_collection, resume_from)
         )
 
     def _scrape_all(self, specific_collection: Optional[str] = None,
-                    limit_per_collection: Optional[int] = None):
+                    limit_per_collection: Optional[int] = None,
+                    resume_from: Optional[str] = None):
         collections = self.get_all_collections()
         if not collections:
             logger.error("No collections found")
             return
 
+        collections = select_collections(
+            collections,
+            specific=specific_collection,
+            resume_from=resume_from,
+        )
+        if resume_from and not collections:
+            logger.error("No collection matching --resume-from %s", resume_from)
+            return
+
         summary = []
         for collection_name, collection_url in collections:
-            if specific_collection and specific_collection.lower() not in collection_name.lower():
-                continue
-
             poems = self.scrape_collection(collection_url, collection_name,
                                           limit=limit_per_collection)
 
@@ -485,6 +521,8 @@ def main():
     parser.add_argument('--collection', help='Collection name (partial match OK)')
     parser.add_argument('--output', default=RabindraScraperConfig.OUTPUT_DIR)
     parser.add_argument('--limit', type=int, help='Limit poems per collection (for testing)')
+    parser.add_argument('--resume-from',
+                       help='Skip collections before this name (partial match OK)')
     parser.add_argument('--delay', type=float, default=RabindraScraperConfig.DELAY_BETWEEN_REQUESTS,
                        help='Delay between requests')
     parser.add_argument('--audit', action='store_true',
@@ -499,7 +537,8 @@ def main():
     scraper.audit_enabled = args.audit
     scraper.audit_screenshots = not args.no_audit_screenshot
     scraper.scrape_all(specific_collection=args.collection,
-                       limit_per_collection=args.limit)
+                       limit_per_collection=args.limit,
+                       resume_from=args.resume_from)
 
 if __name__ == '__main__':
     main()

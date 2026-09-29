@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 from urllib.parse import urljoin
 
-from rabindra_scraper import RabidraScraper, RabindraScraperConfig
+from rabindra_scraper import RabidraScraper, RabindraScraperConfig, atomic_write_text
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -240,7 +240,7 @@ def audit_poems(
         "results": results,
     }
     report_path = output_dir / "audit_report.json"
-    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    atomic_write_text(report_path, json.dumps(report, ensure_ascii=False, indent=2))
     logger.info(
         "Audit %s/%s matched. Report: %s",
         report["matched"],
