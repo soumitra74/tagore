@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 PAGE_BREAK = "\n---PAGE BREAK---\n"
-SKIP_JSON = {"summary.json"}
+SKIP_JSON = {"summary.json", "audit_report.json", "audit_report-1.json", "vocabulary.json"}
 
 
 def normalize_poem_text(text: str) -> str:
@@ -204,6 +204,36 @@ def collect_live_pages(live: LiveKobita, start_url: str) -> List[Dict]:
     return pages
 
 
+def added_counts(results: List[Dict]) -> Dict:
+    return {
+        "checked": len(results),
+        "matched": sum(1 for r in results if r.get("status") == "match"),
+        "mismatched": sum(1 for r in results if r.get("status") == "mismatch"),
+        "page_count_mismatch": sum(1 for r in results if not r.get("page_count_ok", True)),
+        "errors": sum(1 for r in results if r.get("status") == "error"),
+    }
+
+
+def report_from_results(results: List[Dict]) -> Dict:
+    return {
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "checked": len(results),
+        "matched": sum(1 for r in results if r.get("status") == "match"),
+        "mismatched": sum(1 for r in results if r.get("status") == "mismatch"),
+        "page_count_mismatch": sum(1 for r in results if not r.get("page_count_ok", True)),
+        "errors": sum(1 for r in results if r.get("status") == "error"),
+        "results": results,
+    }
+
+
+def load_report_results(output_dir: Path) -> List[Dict]:
+    path = output_dir / "audit_report.json"
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return list(data.get("results") or [])
+
+
 def audit_poems(
     output_dir: Path,
     limit: Optional[int] = None,
@@ -211,6 +241,7 @@ def audit_poems(
     collection: Optional[str] = None,
     delay: float = RabindraScraperConfig.DELAY_BETWEEN_REQUESTS,
     screenshots: bool = True,
+    missing: bool = False,
 ) -> Dict:
     poems = load_scraped_poems(output_dir)
     if collection:
@@ -220,26 +251,38 @@ def audit_poems(
     if limit:
         poems = poems[:limit]
 
+    prior: List[Dict] = []
+    if missing:
+        prior = load_report_results(output_dir)
+        seen = {r.get("url") for r in prior if r.get("url")}
+        poems = [p for p in poems if p.get("url") not in seen]
+        if not poems:
+            logger.info("No unaudited poems. Report unchanged.")
+            path = output_dir / "audit_report.json"
+            if path.exists():
+                return json.loads(path.read_text(encoding="utf-8"))
+            return report_from_results([])
+
     screenshot_dir = output_dir / "audit_screenshots"
     scraper = RabidraScraper(output_dir=str(output_dir))
-    results = []
+    results = list(prior)
+    new_results: List[Dict] = []
+    report_path = output_dir / "audit_report.json"
 
     with LiveKobita() as live:
         for poem in poems:
             result = audit_one(live, scraper, poem, screenshot_dir, screenshots)
+            new_results.append(result)
             results.append(result)
+            report = report_from_results(results)
+            if missing:
+                report["added"] = added_counts(new_results)
+            atomic_write_text(report_path, json.dumps(report, ensure_ascii=False, indent=2))
             time.sleep(delay)
 
-    report = {
-        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "checked": len(results),
-        "matched": sum(1 for r in results if r["status"] == "match"),
-        "mismatched": sum(1 for r in results if r["status"] == "mismatch"),
-        "page_count_mismatch": sum(1 for r in results if not r.get("page_count_ok", True)),
-        "errors": sum(1 for r in results if r["status"] == "error"),
-        "results": results,
-    }
-    report_path = output_dir / "audit_report.json"
+    report = report_from_results(results)
+    if missing:
+        report["added"] = added_counts(new_results)
     atomic_write_text(report_path, json.dumps(report, ensure_ascii=False, indent=2))
     logger.info(
         "Audit %s/%s matched. Report: %s",
@@ -378,6 +421,11 @@ def main():
         help="Delay between poems",
     )
     parser.add_argument("--no-screenshot", action="store_true", help="Skip PNG captures on mismatch")
+    parser.add_argument(
+        "--missing",
+        action="store_true",
+        help="Audit poems whose URL is not already in audit_report.json and merge the rows",
+    )
     args = parser.parse_args()
 
     report = audit_poems(
@@ -387,8 +435,10 @@ def main():
         collection=args.collection,
         delay=args.delay,
         screenshots=not args.no_screenshot,
+        missing=args.missing,
     )
-    if report["mismatched"] or report["errors"] or report["page_count_mismatch"]:
+    batch = report.get("added") if args.missing else report
+    if batch and (batch["mismatched"] or batch["errors"] or batch["page_count_mismatch"]):
         raise SystemExit(1)
 
 
