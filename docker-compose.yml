@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-raguser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ragpass}
+      POSTGRES_DB: ${POSTGRES_DB:-tagore}
+    ports:
+      - "15432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-raguser} -d ${POSTGRES_DB:-tagore}"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+  backend:
+    build: ./packages/backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://raguser:ragpass@postgres:5432/tagore
+      RCA_READONLY_DATABASE_URL: postgresql://rca_readonly:rcareadonly@postgres:5432/tagore
+      OLLAMA_BASE_URL: http://host.docker.internal:11444
+    ports:
+      - "9099:8000"
+    volumes:
+      - ./corpus:/app/corpus:ro
+      - ./eval/golden_qa.json:/app/eval/golden_qa.json:ro
+      - rca_logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ./packages/frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:9099
+    ports:
+      - "5183:5173"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  rca_logs:

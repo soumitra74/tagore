@@ -1,0 +1,182 @@
+[
+  {
+    "id": "q001",
+    "question": "What was the specific serial number of the U.S. Army UH-60A aircraft used for the Airloads Flight Test Program?",
+    "reference_answer": "The serial number of the aircraft used for testing was 83-23748.",
+    "golden_pages": [
+      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 10},
+      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 10}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q002",
+    "question": "Who were the pilots for Flight 90 and Flight 85?",
+    "reference_answer": "The pilots for Flight 90 were Rick Simmons and Munro Dearing. The pilots for Flight 85 were Rick Simmons and George Tucker.",
+    "golden_pages": [
+      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 16},
+      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 16}
+    ],
+    "query_type": "abstractive"
+  },
+  {
+    "id": "q003",
+    "question": "What was the primary objective of Flight 90 compared to the objective of Flight 85?",
+    "reference_answer": "Flight 90's objective was to obtain steady and maneuvering airloads at high weight coefficients over sigma (Cw/sigma) of 0.12 and 0.13. Flight 85's objective was to obtain steady and maneuvering airloads at a lower weight coefficient over sigma (Cw/sigma) of 0.08.",
+    "golden_pages": [
+      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 16},
+      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 16}
+    ],
+    "query_type": "abstractive"
+  },
+  {
+    "id": "q004",
+    "question": "How is the 0-degree rotor azimuth reference defined in the context of this test program?",
+    "reference_answer": "The 0-degree rotor azimuth reference is defined as the moment when the pressure blade (blade 1) zero-lag reference line passes directly over the rotating beacon light on the vertical tail.",
+    "golden_pages": [
+      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 13},
+      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 13}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q005",
+    "question": "According to the hub detail information, what is the distance from the center of rotation to the elastomeric hinge focal point?",
+    "reference_answer": "The elastomeric hinge focal point is located 14.89 inches away from the center of rotation.",
+    "golden_pages": [
+      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 13},
+      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 13}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q006",
+    "question": "What was the takeoff gross weight for Flight 90, and how does it compare to the takeoff gross weight for Flight 85?",
+    "reference_answer": "The takeoff gross weight for Flight 90 was 17,857 pounds, which is 480 pounds heavier than Flight 85's takeoff gross weight of 17,377 pounds.",
+    "golden_pages": [
+      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 16},
+      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 16}
+    ],
+    "query_type": "abstractive"
+  },
+  {
+    "id": "q007",
+    "question": "For Data Counter 9017, what were the specific recorded values for True Airspeed and Density Altitude?",
+    "reference_answer": "For Counter 9017, the True Airspeed was 102.23 knots and the Density Altitude was 18,703.6 feet.",
+    "golden_pages": [
+      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 18}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q008",
+    "question": "Which two database systems were utilized to store and archive the UH-60A Airloads Flight Test data over time?",
+    "reference_answer": "The data was originally stored in the Tilt Rotor Engineering Database System (TRENDS). Later, in 2014, it was moved to TRENDSClient, a Java-based network application and database server.",
+    "golden_pages": [
+      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 15},
+      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 15}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q009",
+    "question": "How many dynamic pressure transducers were installed on Blade 1, and how were they distributed?",
+    "reference_answer": "There were 242 dynamic pressure transducers installed on Blade 1, distributed across both the top and bottom surfaces at 9 distinct radial stations.",
+    "golden_pages": [
+      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 12},
+      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 12}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q010",
+    "question": "What were the respective Advance Ratios recorded for Counter 8534 and Counter 9017?",
+    "reference_answer": "The Advance Ratio recorded for Counter 8534 was 0.3677, and the Advance Ratio for Counter 9017 was 0.2356.",
+    "golden_pages": [
+      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 18},
+      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 18}
+    ],
+    "query_type": "abstractive"
+  },
+  {
+    "id": "q011",
+    "question": "What NASA software toolbox was used for all the flight test maneuver design, simulation, and data analysis in the aircraft moment of inertia study, and how widely has it been used?",
+    "reference_answer": "SIDPAC (System IDentification Programs for AirCraft), a MATLAB toolbox developed at NASA Langley, was used; it has been used at more than 100 organizations worldwide.",
+    "golden_pages": [
+      {"document": "Morelli_Flight_Inertia_JGCD_Paper_final0921.pdf", "page": 4}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q012",
+    "question": "What aircraft was used for the subscale flight test to estimate moments of inertia, and what is it based on?",
+    "reference_answer": "The E1 aircraft, a commercially available 40% scale Extra 330 SC remotely piloted fixed-wing airplane.",
+    "golden_pages": [
+      {"document": "Morelli_Flight_Inertia_JGCD_Paper_final0921.pdf", "page": 15}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q013",
+    "question": "What was the maximum absolute percent difference between the E1 aircraft's flight-test-estimated inertia parameters and the ground-test values?",
+    "reference_answer": "5.80%",
+    "golden_pages": [
+      {"document": "Morelli_Flight_Inertia_JGCD_Paper_final0921.pdf", "page": 21}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q014",
+    "question": "Who are the lead author and co-author of the AGARDograph on Application of IRIG 106 Digital Data Recorder Standards for Flight Test, and what organizations do they represent?",
+    "reference_answer": "Lead author Johan Klijn, Principal Project Engineer at NLR Royal Netherlands Aerospace Centre; co-author Bruce Lipe, Chief Engineer at NASA Armstrong Flight Research Center, Dryden Aeronautical Test Range.",
+    "golden_pages": [
+      {"document": "Agardograph SCI266 Application of IRIG 106 Digital Data Standards for Flight Test final.pdf", "page": 10}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q015",
+    "question": "According to the McCallum overview cited in the IRIG 106 AGARDograph, by roughly what factor did flash memory costs decrease between 2004 and 2018?",
+    "reference_answer": "By a factor of about 1,000, from circa $0.2 per MB in 2004 to around $0.2 per GB in 2018.",
+    "golden_pages": [
+      {"document": "Agardograph SCI266 Application of IRIG 106 Digital Data Standards for Flight Test final.pdf", "page": 14}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q016",
+    "question": "In what year did the RCC Telemetry Group first publish the IRIG 106 Chapter 10 'Solid-State On-Board Recorder Standard'?",
+    "reference_answer": "2004",
+    "golden_pages": [
+      {"document": "Agardograph SCI266 Application of IRIG 106 Digital Data Standards for Flight Test final.pdf", "page": 2}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q017",
+    "question": "In the NASA/FAA/U.S. Army noise abatement flight test, which six helicopters were tested?",
+    "reference_answer": "Robinson R44, Robinson R66, Bell Helicopter 206L3, Bell Helicopter 407, Airbus AS350B3, and Airbus EC130B4.",
+    "golden_pages": [
+      {"document": "Noise Abatement Flight Test Data Report.pdf", "page": 46}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q018",
+    "question": "What sample rate and bit resolution did the NASA LaRC Wireless Acoustic Measurement System (WAMS) use to record acoustic data during the noise abatement flight test?",
+    "reference_answer": "25,000 samples per second with 16-bit resolution.",
+    "golden_pages": [
+      {"document": "Noise Abatement Flight Test Data Report.pdf", "page": 48}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q019",
+    "question": "Where were the R44/R66 forward-flight noise tests conducted, and where were the AS350B3, EC130B4, Bell 407, and 206L3 tests conducted?",
+    "reference_answer": "The R44 and R66 were flown at Eglin AFB Test Range C62 (Lat. 30.646788, Lon. -86.227224); the AS350B3, EC130B4, Bell 407, and 206L3 were tested at Amedee Army Airfield (Lat. 40.26327596, Lon. -120.15896670).",
+    "golden_pages": [
+      {"document": "Noise Abatement Flight Test Data Report.pdf", "page": 46}
+    ],
+    "query_type": "abstractive"
+  }
+]
