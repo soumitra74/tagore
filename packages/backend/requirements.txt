@@ -1,0 +1,20 @@
+fastapi>=0.115,<0.116
+uvicorn[standard]>=0.32,<0.33
+pydantic-settings>=2.6,<3
+asyncpg>=0.30,<0.31
+pgvector>=0.3.6,<0.4
+pypdf>=5.1,<6
+httpx>=0.27,<0.28
+anthropic>=0.39,<1
+openai>=1.54,<2
+tiktoken>=0.8,<0.9
+python-multipart>=0.0.12,<0.1
+sentence-transformers>=3.0,<4
+# Required by nomic-ai/nomic-embed-text-v1.5's custom modeling code
+# (trust_remote_code=True in local_embedding_provider.py).
+einops>=0.8,<0.9
+# Zero-shot NER for graph RAG phase 1 (urchade/gliner_base).
+gliner>=0.2,<0.3
+# Required by transformers' fast-tokenizer fallback path when loading
+# urchade/gliner_base's deberta-v2 tokenizer (protobuf-based sentencepiece model).
+protobuf>=4.25,<6
