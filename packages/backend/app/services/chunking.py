@@ -1,3 +1,4 @@
+import json
 import re
 from dataclasses import dataclass
 from io import BytesIO
@@ -47,6 +48,68 @@ def extract_pages(pdf_bytes: bytes) -> list[tuple[int, str]]:
         (i + 1, _normalize_page_text(page.extract_text() or ""))
         for i, page in enumerate(reader.pages)
     ]
+
+
+# The poetry JSON collections mark a printed page boundary inside a poem's
+# `content` with this literal. It plays the same role as a PDF page object:
+# everything between markers is one page for chunking and citation.
+_PAGE_BREAK = "---PAGE BREAK---"
+
+
+def _normalize_verse_page(text: str) -> str:
+    """Same cleanup as a PDF page, then drop the print-layout indentation
+    these JSON files carry on every line. Line breaks stay, because they
+    are the verse; runs of blank lines collapse to a single stanza break."""
+    text = _normalize_page_text(text)
+    lines = [re.sub(r"[ \t]+", " ", line).strip() for line in text.splitlines()]
+    collapsed: list[str] = []
+    blank = False
+    for line in lines:
+        if not line:
+            if collapsed and not blank:
+                collapsed.append("")
+            blank = True
+            continue
+        collapsed.append(line)
+        blank = False
+    while collapsed and collapsed[-1] == "":
+        collapsed.pop()
+    return "\n".join(collapsed)
+
+
+def extract_json_pages(raw: bytes) -> list[tuple[int, str]]:
+    """Turn one collection file into the same (page_number, text) pairs
+    extract_pages() produces for a PDF.
+
+    Each object is one poem. `content` is split on ---PAGE BREAK---, and
+    the pieces are numbered sequentially through the file the way PDF pages
+    are numbered through a document. `pages` is the source's own count of
+    those pieces; the marker is what actually separates them. The poem
+    title (`poem_number`) is kept at the top of every page so a later page
+    of a long poem still names the poem it belongs to.
+    """
+    try:
+        poems = json.loads(raw.decode("utf-8-sig"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Corpus JSON is not valid: {exc}") from exc
+    if not isinstance(poems, list):
+        raise ValueError("Corpus JSON must be a list of poems")
+
+    pages: list[tuple[int, str]] = []
+    for poem in poems:
+        if not isinstance(poem, dict):
+            raise ValueError("Each poem must be an object")
+        title = str(poem.get("poem_number") or "").strip()
+        content = poem.get("content") or ""
+        if not isinstance(content, str):
+            content = str(content)
+        for segment in content.split(_PAGE_BREAK):
+            body = _normalize_verse_page(segment)
+            if not body:
+                continue
+            text = f"{title}\n{body}" if title else body
+            pages.append((len(pages) + 1, text))
+    return pages
 
 
 def chunk_page_text(

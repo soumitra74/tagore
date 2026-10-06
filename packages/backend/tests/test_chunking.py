@@ -1,5 +1,7 @@
+import json
 from pathlib import Path
 
+import pytest
 import tiktoken
 
 from app.services.chunking import (
@@ -10,6 +12,7 @@ from app.services.chunking import (
     chunk_page_text,
     chunk_recursive_semantic,
     chunk_sentence_window,
+    extract_json_pages,
     extract_pages,
     _normalize_page_text,
     _strip_null_bytes,
@@ -282,6 +285,61 @@ def test_chunk_page_dispatches_to_sliding_window():
 def test_chunk_page_dispatches_to_fixed_token():
     text = "the quick brown fox jumps over the lazy dog. " * 40
     assert chunk_page("fixed_token", 5, text, 100, 20) == chunk_fixed_token(5, text, 100, 20)
+
+
+def test_extract_json_pages_splits_poems_on_page_breaks():
+    raw = json.dumps(
+        [
+            {
+                "poem_number": "আকাশপ্রদীপ",
+                "collection": "আকাশপ্রদীপ",
+                "url": "http://example/1",
+                "pages": 1,
+                "content": "         গোধূলিতে নামল আঁধার,\n                        ফুরিয়ে গেল বেলা।",
+            },
+            {
+                "poem_number": "যাত্রাপথ",
+                "collection": "আকাশপ্রদীপ",
+                "url": "http://example/2",
+                "pages": 2,
+                "content": "প্রথম পাতা।\n---PAGE BREAK---\nদ্বিতীয় পাতা।",
+            },
+        ],
+        ensure_ascii=False,
+    ).encode()
+
+    pages = extract_json_pages(raw)
+
+    assert [number for number, _ in pages] == [1, 2, 3]
+    assert pages[0][1] == "আকাশপ্রদীপ\nগোধূলিতে নামল আঁধার,\nফুরিয়ে গেল বেলা।"
+    assert pages[1][1] == "যাত্রাপথ\nপ্রথম পাতা।"
+    assert pages[2][1] == "যাত্রাপথ\nদ্বিতীয় পাতা।"
+    assert all("---PAGE BREAK---" not in text for _, text in pages)
+
+
+def test_extract_json_pages_skips_empty_page_and_cleans_pdf_artifacts():
+    raw = json.dumps(
+        [
+            {
+                "poem_number": "নোট",
+                "pages": 3,
+                "content": "শিরোনাম .......... ৫\nO\x00cer\n---PAGE BREAK---\n   \n---PAGE BREAK---\nশেষ পাতা।",
+            }
+        ]
+    ).encode()
+
+    pages = extract_json_pages(raw)
+
+    assert [number for number, _ in pages] == [1, 2]
+    assert "....." not in pages[0][1]
+    assert "\x00" not in pages[0][1]
+    assert pages[0][1].startswith("নোট\nশিরোনাম")
+    assert pages[1][1] == "নোট\nশেষ পাতা।"
+
+
+def test_extract_json_pages_rejects_non_list():
+    with pytest.raises(ValueError, match="list of poems"):
+        extract_json_pages(b'{"poem_number": "x"}')
 
 
 def test_extract_pages_reads_corpus_pdf():

@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from app.db import ExperimentConfig
@@ -181,3 +183,31 @@ async def test_ingest_pdf_reuses_existing_document_id_for_new_config(monkeypatch
     document_id, config_id, _, _, _ = db.inserted_chunks
     assert document_id == "doc-1"
     assert config_id == 2
+
+
+@pytest.mark.asyncio
+async def test_ingest_json_collection_chunks_poem_pages():
+    raw = json.dumps(
+        [
+            {
+                "poem_number": "ভূমিকা",
+                "collection": "আকাশপ্রদীপ",
+                "pages": 2,
+                "content": "প্রথম পাতা।\n---PAGE BREAK---\nদ্বিতীয় পাতা।",
+            }
+        ],
+        ensure_ascii=False,
+    ).encode()
+
+    db = FakeDatabase()
+    result = await ingest_pdf(
+        "আকাশপ্রদীপ.json", raw, db, FakeEmbeddingProvider(), TEST_CONFIG
+    )
+
+    assert result.page_count == 2
+    assert result.chunk_count == 2
+    chunks = db.inserted_chunks[3]
+    assert chunks[0].page_number == 1
+    assert chunks[0].text == "ভূমিকা\nপ্রথম পাতা।"
+    assert chunks[1].page_number == 2
+    assert chunks[1].text == "ভূমিকা\nদ্বিতীয় পাতা।"

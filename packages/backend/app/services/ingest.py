@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from app.db import ExperimentConfig
-from app.services.chunking import chunk_page, extract_pages
+from app.services.chunking import chunk_page, extract_json_pages, extract_pages
 
 
 @dataclass
@@ -11,15 +11,22 @@ class IngestResult:
     page_count: int
 
 
+def _extract_document_pages(filename: str, raw: bytes) -> list[tuple[int, str]]:
+    if filename.lower().endswith(".json"):
+        return extract_json_pages(raw)
+    return extract_pages(raw)
+
+
 async def ingest_pdf(
     filename: str, pdf_bytes: bytes, db, embedding_provider, config: ExperimentConfig
 ) -> IngestResult:
     # Extracted unconditionally, even on a cache hit below, since page_count
-    # is a property of the PDF itself, not of this config's chunking -- a
+    # is a property of the source file, not of this config's chunking -- a
     # re-ingest into a different config still needs the real count, not a
     # count derived from chunks (which could undercount a page that produced
-    # zero chunks).
-    pages = extract_pages(pdf_bytes)
+    # zero chunks). JSON collections are split on ---PAGE BREAK--- into the
+    # same page list a PDF produces; everything after this point is shared.
+    pages = _extract_document_pages(filename, pdf_bytes)
     page_count = len(pages)
 
     existing_document_id = await db.get_document_by_filename(filename)

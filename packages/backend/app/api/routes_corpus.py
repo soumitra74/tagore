@@ -22,11 +22,24 @@ class IngestCorpusFileRequest(BaseModel):
     config_id: int | None = None
 
 
-def _list_corpus_filenames(corpus_dir: str) -> list[str]:
+# PDFs and the JSON poetry collections. Both go through ingest_pdf, which
+# splits JSON on ---PAGE BREAK--- and PDFs on real pages.
+_INGEST_SUFFIXES = {".pdf", ".json"}
+_LIBRARY_SUFFIXES = {".pdf", ".json"}
+
+
+def _list_corpus_filenames(
+    corpus_dir: str, suffixes: set[str] | None = None
+) -> list[str]:
+    allowed = _INGEST_SUFFIXES if suffixes is None else suffixes
     path = Path(corpus_dir)
     if not path.is_dir():
         return []
-    return sorted(p.name for p in path.glob("*.pdf"))
+    return sorted(
+        p.name
+        for p in path.iterdir()
+        if p.is_file() and p.suffix.lower() in allowed
+    )
 
 
 async def _get_embedding_provider(request: Request, config: ExperimentConfig):
@@ -65,7 +78,9 @@ async def _record_run(
 
 @router.get("/api/corpus")
 async def list_corpus_files(request: Request):
-    return _list_corpus_filenames(request.app.state.settings.corpus_dir)
+    return _list_corpus_filenames(
+        request.app.state.settings.corpus_dir, suffixes=_LIBRARY_SUFFIXES
+    )
 
 
 @router.post("/api/corpus/ingest")
