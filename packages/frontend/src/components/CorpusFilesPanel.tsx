@@ -66,7 +66,7 @@ export function CorpusFilesPanel({ configs, onIngested }: CorpusFilesPanelProps)
       {loading && <p>Loading...</p>}
       {error && <p className="error">{error}</p>}
       {!loading && !error && files.length === 0 && (
-        <p>No PDFs found in the corpus/ folder.</p>
+        <p>No files found in the corpus/ folder.</p>
       )}
       {!loading && !error && files.length > 0 && (
         <table className="corpus-table">
