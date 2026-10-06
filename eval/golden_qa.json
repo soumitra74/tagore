@@ -1,182 +1,283 @@
 [
   {
     "id": "q001",
-    "question": "What was the specific serial number of the U.S. Army UH-60A aircraft used for the Airloads Flight Test Program?",
-    "reference_answer": "The serial number of the aircraft used for testing was 83-23748.",
+    "question": "'সোনার তরী' কবিতাটি কোন পঙ্‌ক্তি দিয়ে শুরু হয়?",
+    "reference_answer": "কবিতাটি শুরু হয় \"গগনে গরজে মেঘ, ঘন বরষা।\" পঙ্‌ক্তি দিয়ে; পরের পঙ্‌ক্তি \"কূলে একা বসে আছি, নাহি ভরসা।\"",
     "golden_pages": [
-      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 10},
-      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 10}
+      {"document": "সোনার_তরী.json", "page": 2}
     ],
     "query_type": "extractive"
   },
   {
     "id": "q002",
-    "question": "Who were the pilots for Flight 90 and Flight 85?",
-    "reference_answer": "The pilots for Flight 90 were Rick Simmons and Munro Dearing. The pilots for Flight 85 were Rick Simmons and George Tucker.",
+    "question": "'সোনার তরী' কবিতায় কবি তরীর মাঝিকে কী নিয়ে যেতে অনুরোধ করেন, এবং শেষে কবির কী পরিণতি হয়?",
+    "reference_answer": "কবি মাঝিকে কূলে তরী ভিড়িয়ে তাঁর সোনার ধান নিয়ে যেতে বলেন এবং সব ধান তরীতে তুলে দেন। কিন্তু ছোটো তরী তাঁর সোনার ধানেই ভরে যায় ('ঠাঁই নাই, ঠাঁই নাই'), কবির নিজের জায়গা হয় না। তরী ধান নিয়ে চলে যায়, আর কবি শ্রাবণের মেঘে ঘেরা শূন্য নদীর তীরে একা পড়ে থাকেন।",
     "golden_pages": [
-      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 16},
-      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 16}
+      {"document": "সোনার_তরী.json", "page": 2},
+      {"document": "সোনার_তরী.json", "page": 3}
     ],
     "query_type": "abstractive"
   },
   {
     "id": "q003",
-    "question": "What was the primary objective of Flight 90 compared to the objective of Flight 85?",
-    "reference_answer": "Flight 90's objective was to obtain steady and maneuvering airloads at high weight coefficients over sigma (Cw/sigma) of 0.12 and 0.13. Flight 85's objective was to obtain steady and maneuvering airloads at a lower weight coefficient over sigma (Cw/sigma) of 0.08.",
+    "question": "'দুই বিঘা জমি' কবিতায় কথকের নাম কী, এবং বাবু কেন তার দুই বিঘা জমি কিনে নিতে চেয়েছিলেন?",
+    "reference_answer": "কথকের নাম উপেন। বাবু (জমিদার) একটি বাগান করেছিলেন; উপেনের দুই বিঘা জমি পেলে বাগানটি দৈর্ঘ্যে ও প্রস্থে সমান হবে, তাই তিনি জমিটি চেয়েছিলেন।",
     "golden_pages": [
-      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 16},
-      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 16}
+      {"document": "কাহিনী.json", "page": 7}
     ],
-    "query_type": "abstractive"
+    "query_type": "extractive"
   },
   {
     "id": "q004",
-    "question": "How is the 0-degree rotor azimuth reference defined in the context of this test program?",
-    "reference_answer": "The 0-degree rotor azimuth reference is defined as the moment when the pressure blade (blade 1) zero-lag reference line passes directly over the rotating beacon light on the vertical tail.",
+    "question": "'দুই বিঘা জমি' কবিতায় ভিটেমাটি হারিয়ে উপেন কত বছর দেশে দেশে ঘুরেছিল, এবং কী বেশে?",
+    "reference_answer": "মিথ্যা দেনার খতে ডিক্রি হয়ে ভিটেমাটি হারানোর পর উপেন সন্ন্যাসীবেশে, সাধুর শিষ্য হয়ে, প্রায় পনেরো-ষোলো বছর দেশে দেশে ঘুরেছিল।",
     "golden_pages": [
-      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 13},
-      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 13}
+      {"document": "কাহিনী.json", "page": 7}
     ],
     "query_type": "extractive"
   },
   {
     "id": "q005",
-    "question": "According to the hub detail information, what is the distance from the center of rotation to the elastomeric hinge focal point?",
-    "reference_answer": "The elastomeric hinge focal point is located 14.89 inches away from the center of rotation.",
+    "question": "'দুই বিঘা জমি' কবিতায় গ্রামে ফিরে উপেন আমগাছের তলায় দুটি আম কুড়িয়ে নেওয়ার পর কী ঘটেছিল?",
+    "reference_answer": "উপেন যখন তার পুরোনো বাড়ির আমগাছের তলায় বসে ছিল, বাতাসে দুটি পাকা আম তার কোলের কাছে পড়ে। তখন মালী এসে গালি দিয়ে তাকে ধরে বাবুর কাছে নিয়ে যায়; বাবু তখন ছিপ হাতে মাছ ধরছিলেন। বাবু তাকে মেরে খুন করার হুমকি দেন এবং হেসে বলেন সে 'সাধুবেশে পাকা চোর'। উপেন বেদনায় ভাবে, 'তুমি মহারাজ সাধু হলে আজ, আমি আজ চোর বটে!'",
     "golden_pages": [
-      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 13},
-      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 13}
+      {"document": "কাহিনী.json", "page": 8},
+      {"document": "কাহিনী.json", "page": 9}
     ],
-    "query_type": "extractive"
+    "query_type": "abstractive"
   },
   {
     "id": "q006",
-    "question": "What was the takeoff gross weight for Flight 90, and how does it compare to the takeoff gross weight for Flight 85?",
-    "reference_answer": "The takeoff gross weight for Flight 90 was 17,857 pounds, which is 480 pounds heavier than Flight 85's takeoff gross weight of 17,377 pounds.",
+    "question": "'পুরাতন ভৃত্য' কবিতায় ভৃত্যের নাম কী, এবং বৃন্দাবনে গিয়ে তার কী পরিণতি হয়েছিল?",
+    "reference_answer": "ভৃত্যের নাম কেষ্টা (কৃষ্ণকান্ত)। বৃন্দাবনে প্রভু কঠিন অসুখে পড়লে সঙ্গীরা সবাই চলে যায়, কিন্তু কেষ্টা দিনরাত শিয়রে দাঁড়িয়ে সেবা করে। প্রভু সেরে উঠলে কেষ্টা নিজেই সেই রোগে জ্বরে পড়ে দুদিন অচেতন থেকে মারা যায় — যাকে এতবার ছাড়াতে চেয়েছিলেন, সে এভাবে চিরকালের মতো ছেড়ে গেল।",
     "golden_pages": [
-      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 16},
-      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 16}
+      {"document": "কাহিনী.json", "page": 5},
+      {"document": "কাহিনী.json", "page": 6}
     ],
     "query_type": "abstractive"
   },
   {
     "id": "q007",
-    "question": "For Data Counter 9017, what were the specific recorded values for True Airspeed and Density Altitude?",
-    "reference_answer": "For Counter 9017, the True Airspeed was 102.23 knots and the Density Altitude was 18,703.6 feet.",
+    "question": "'পুরাতন ভৃত্য' কবিতায় কথক কোন যুক্তিতে স্ত্রীকে বৃন্দাবনে সঙ্গে নিতে রাজি হননি?",
+    "reference_answer": "কথক স্ত্রীকে বুঝিয়েছিলেন, 'পতির পুণ্যে সতীর পুণ্য, নহিলে খরচ বাড়ে' — অর্থাৎ স্বামীর তীর্থের পুণ্যেই স্ত্রীর পুণ্য হবে, আর সঙ্গে গেলে খরচ বাড়বে।",
     "golden_pages": [
-      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 18}
+      {"document": "কাহিনী.json", "page": 5}
     ],
     "query_type": "extractive"
   },
   {
     "id": "q008",
-    "question": "Which two database systems were utilized to store and archive the UH-60A Airloads Flight Test data over time?",
-    "reference_answer": "The data was originally stored in the Tilt Rotor Engineering Database System (TRENDS). Later, in 2014, it was moved to TRENDSClient, a Java-based network application and database server.",
+    "question": "'পরশপাথর' কবিতায় খ্যাপা সন্ন্যাসী কীভাবে জানতে পারল যে সে পরশপাথর ছুঁয়েছিল, এবং তারপর সে কী করল?",
+    "reference_answer": "গ্রামের এক ছেলে তার কোমরে সোনার শিকল দেখে জিজ্ঞাসা করে সেটা কোথায় পেল। সন্ন্যাসী দেখে তার লোহার শিকল সোনা হয়ে গেছে। অভ্যাসবশে সে নুড়ি কুড়িয়ে শিকলে ঠেকিয়ে না দেখেই ছুঁড়ে ফেলত — তাই কখন পরশপাথরও ছুঁড়ে ফেলেছে জানে না। হতাশায় সে আবার পুরোনো পথে ফিরে বাকি ভগ্ন জীবন দিয়ে সেই হারানো পরশপাথর খুঁজতে থাকে।",
     "golden_pages": [
-      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 15},
-      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 15}
+      {"document": "সোনার_তরী.json", "page": 35}
     ],
-    "query_type": "extractive"
+    "query_type": "abstractive"
   },
   {
     "id": "q009",
-    "question": "How many dynamic pressure transducers were installed on Blade 1, and how were they distributed?",
-    "reference_answer": "There were 242 dynamic pressure transducers installed on Blade 1, distributed across both the top and bottom surfaces at 9 distinct radial stations.",
+    "question": "'বীরপুরুষ' কবিতায় খোকা কল্পনায় মাকে নিয়ে কীভাবে যাচ্ছিল, এবং সন্ধ্যায় তারা কোন মাঠে পৌঁছায়?",
+    "reference_answer": "মা যাচ্ছিলেন পালকিতে দরজা একটু ফাঁক করে, আর খোকা যাচ্ছিল রাঙা ঘোড়ায় চড়ে পালকির পাশে পাশে। সন্ধ্যায় তারা জোড়াদিঘির মাঠে পৌঁছায়।",
     "golden_pages": [
-      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 12},
-      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 12}
+      {"document": "শিশু.json", "page": 35}
     ],
     "query_type": "extractive"
   },
   {
     "id": "q010",
-    "question": "What were the respective Advance Ratios recorded for Counter 8534 and Counter 9017?",
-    "reference_answer": "The Advance Ratio recorded for Counter 8534 was 0.3677, and the Advance Ratio for Counter 9017 was 0.2356.",
+    "question": "'বীরপুরুষ' কবিতায় ডাকাতদের চেহারা কেমন ছিল, এবং খোকা তাদের সঙ্গে কী করল?",
+    "reference_answer": "ডাকাতরা 'হাঁরে রে রে রে রে' হাঁক দিয়ে আসে; তাদের হাতে লাঠি, মাথায় ঝাঁকড়া চুল, কানে গোঁজা জবার ফুল। বেয়ারারা পালকি ফেলে কাঁটাবনে লুকায়। খোকা তলোয়ার দেখিয়ে তাদের সাবধান করে, তারপর ঘোড়া ছুটিয়ে তাদের মাঝে গিয়ে ভয়ানক লড়াই করে — অনেকে পালায়, অনেকের মাথা কাটা পড়ে। লড়াই শেষে মা পালকি থেকে নেমে তাকে কোলে নিয়ে চুমো খান।",
     "golden_pages": [
-      {"document": "NASA_TelemetryAnalysis_PFR2_First23Pages.pdf", "page": 18},
-      {"document": "NASA_TelemetryAnalysis_PFR1_First23Pages.pdf", "page": 18}
+      {"document": "শিশু.json", "page": 35},
+      {"document": "শিশু.json", "page": 36}
     ],
     "query_type": "abstractive"
   },
   {
     "id": "q011",
-    "question": "What NASA software toolbox was used for all the flight test maneuver design, simulation, and data analysis in the aircraft moment of inertia study, and how widely has it been used?",
-    "reference_answer": "SIDPAC (System IDentification Programs for AirCraft), a MATLAB toolbox developed at NASA Langley, was used; it has been used at more than 100 organizations worldwide.",
+    "question": "'অভিসার' কবিতায় সন্ন্যাসী ও নগরনটীর নাম কী, এবং সন্ন্যাসী তাঁর প্রতিশ্রুতি কীভাবে রক্ষা করেছিলেন?",
+    "reference_answer": "সন্ন্যাসীর নাম উপগুপ্ত, নগরনটীর নাম বাসবদত্তা। মথুরার প্রাচীরতলে ঘুমন্ত উপগুপ্তকে বাসবদত্তা নিজের গৃহে আমন্ত্রণ জানালে তিনি বলেন, 'এখনো আমার সময় হয় নি... সময় যেদিন আসিবে আপনি যাইব তোমার কুঞ্জে।' পরে চৈত্রসন্ধ্যায় দেখা যায়, মারীগুটিকা (বসন্ত) রোগে আক্রান্ত বাসবদত্তাকে নগরবাসী পরিখার বাইরে ফেলে দিয়েছে। উপগুপ্ত তার মাথা কোলে তুলে নেন, শুষ্ক ঠোঁটে জল দেন, দেহে চন্দন লেপে দেন এবং বলেন, 'আজি রজনীতে হয়েছে সময়, এসেছি বাসবদত্তা!'",
     "golden_pages": [
-      {"document": "Morelli_Flight_Inertia_JGCD_Paper_final0921.pdf", "page": 4}
+      {"document": "কথা.json", "page": 23},
+      {"document": "কথা.json", "page": 24},
+      {"document": "কথা.json", "page": 25},
+      {"document": "কথা.json", "page": 26}
     ],
-    "query_type": "extractive"
+    "query_type": "abstractive"
   },
   {
     "id": "q012",
-    "question": "What aircraft was used for the subscale flight test to estimate moments of inertia, and what is it based on?",
-    "reference_answer": "The E1 aircraft, a commercially available 40% scale Extra 330 SC remotely piloted fixed-wing airplane.",
+    "question": "'পূজারিনী' কবিতায় রাজা বিম্বিসার কী সংগ্রহ করে তার উপর স্তূপ নির্মাণ করেছিলেন?",
+    "reference_answer": "রাজা বিম্বিসার বুদ্ধকে প্রণাম করে তাঁর পাদনখকণা চেয়ে নিয়েছিলেন এবং প্রাসাদকাননে তার উপর একটি অপরূপ শিলাময় স্তূপ নির্মাণ করেছিলেন।",
     "golden_pages": [
-      {"document": "Morelli_Flight_Inertia_JGCD_Paper_final0921.pdf", "page": 15}
+      {"document": "কথা.json", "page": 19}
     ],
     "query_type": "extractive"
   },
   {
     "id": "q013",
-    "question": "What was the maximum absolute percent difference between the E1 aircraft's flight-test-estimated inertia parameters and the ground-test values?",
-    "reference_answer": "5.80%",
+    "question": "'পূজারিনী' কবিতায় শ্রীমতী কে ছিলেন, অজাতশত্রু কী আদেশ দিয়েছিলেন, এবং শ্রীমতীর কী পরিণতি হয়েছিল?",
+    "reference_answer": "শ্রীমতী ছিলেন রাজপুরীর এক দাসী। অজাতশত্রু রাজা হয়ে বৌদ্ধধর্ম মুছে ফেলেন এবং ঘোষণা করেন, স্তূপে যে অর্ঘ্য দেবে সে শূলে মরবে অথবা নির্বাসিত হবে। রাজমহিষী, বধূ অমিতা ও কুমারী শুক্লা সবাই ভয়ে তাকে নিরস্ত করতে চাইলেও শ্রীমতী সন্ধ্যায় স্তূপের পাদমূলে প্রদীপমালা জ্বালেন। পুররক্ষক এসে প্রশ্ন করলে তিনি বলেন, 'আমি বুদ্ধের দাসী' — এবং সেই রাতে তাঁকে হত্যা করা হয়; স্তূপে শেষ আরতির শিখা নিভে যায়।",
     "golden_pages": [
-      {"document": "Morelli_Flight_Inertia_JGCD_Paper_final0921.pdf", "page": 21}
+      {"document": "কথা.json", "page": 19},
+      {"document": "কথা.json", "page": 20},
+      {"document": "কথা.json", "page": 21},
+      {"document": "কথা.json", "page": 22}
     ],
-    "query_type": "extractive"
+    "query_type": "abstractive"
   },
   {
     "id": "q014",
-    "question": "Who are the lead author and co-author of the AGARDograph on Application of IRIG 106 Digital Data Recorder Standards for Flight Test, and what organizations do they represent?",
-    "reference_answer": "Lead author Johan Klijn, Principal Project Engineer at NLR Royal Netherlands Aerospace Centre; co-author Bruce Lipe, Chief Engineer at NASA Armstrong Flight Research Center, Dryden Aeronautical Test Range.",
+    "question": "'বন্দী বীর' কবিতায় বন্দা কোথায় বন্দী হয়েছিলেন, এবং দিল্লিতে কাজি তাঁকে কী করতে বাধ্য করেছিল?",
+    "reference_answer": "বন্দা গুরুদাসপুর গড়ে তুরানি সেনার হাতে বন্দী হন এবং তাঁকে শৃঙ্খলিত করে দিল্লিতে নিয়ে যাওয়া হয়। সেখানে সাত দিনে সাত শত শিখ বন্দীকে বধ করার পর কাজি বন্দার কোলে তাঁর কিশোর ছেলেকে তুলে দিয়ে তাকে নিজের হাতে বধ করতে বলে। বন্দা 'গুরুজির জয়' বলে ছেলের বুকে ছুরি বসান; তারপর ঘাতক তপ্ত সাঁড়াশি দিয়ে বন্দার দেহ ছিঁড়ে ফেলে, কিন্তু তিনি একটিও কাতর শব্দ না করে মারা যান।",
     "golden_pages": [
-      {"document": "Agardograph SCI266 Application of IRIG 106 Digital Data Standards for Flight Test final.pdf", "page": 10}
+      {"document": "কথা.json", "page": 55},
+      {"document": "কথা.json", "page": 56},
+      {"document": "কথা.json", "page": 57}
     ],
-    "query_type": "extractive"
+    "query_type": "abstractive"
   },
   {
     "id": "q015",
-    "question": "According to the McCallum overview cited in the IRIG 106 AGARDograph, by roughly what factor did flash memory costs decrease between 2004 and 2018?",
-    "reference_answer": "By a factor of about 1,000, from circa $0.2 per MB in 2004 to around $0.2 per GB in 2018.",
+    "question": "'পুনশ্চ' কাব্যগ্রন্থের 'বাঁশি' কবিতার কথক কোথায় থাকেন, কী কাজ করেন এবং তাঁর বেতন কত?",
+    "reference_answer": "কথক কিনু গোয়ালার গলিতে একটি দোতলা বাড়ির লোহার গরাদ দেওয়া একতলা ঘরে থাকেন। তিনি একটি সদাগরি আপিসের কনিষ্ঠ কেরানি, বেতন পঁচিশ টাকা; দত্তদের বাড়িতে ছেলে পড়িয়ে খেতে পান।",
     "golden_pages": [
-      {"document": "Agardograph SCI266 Application of IRIG 106 Digital Data Standards for Flight Test final.pdf", "page": 14}
+      {"document": "পুনশ্চ.json", "page": 85}
     ],
     "query_type": "extractive"
   },
   {
     "id": "q016",
-    "question": "In what year did the RCC Telemetry Group first publish the IRIG 106 Chapter 10 'Solid-State On-Board Recorder Standard'?",
-    "reference_answer": "2004",
+    "question": "'বাঁশি' কবিতায় কান্তবাবুর কর্নেটের সুর শুনে হরিপদ কেরানির মনে কী উপলব্ধি জাগে?",
+    "reference_answer": "গলির মোড়ের শৌখিন কান্তবাবু কর্নেট বাজান। সিন্ধু-বারোয়াঁর সুর বেজে উঠলে মুহূর্তে ধরা পড়ে যে নোংরা গলিটা মিথ্যা; মনে হয় আকবর বাদশার সঙ্গে হরিপদ কেরানির কোনো ভেদ নেই — ছেঁড়া ছাতা আর রাজছত্র মিলে এক বৈকুণ্ঠের দিকে চলেছে। সেই সুরের সত্য জগতে ধলেশ্বরী নদী বয়ে চলে, আর আঙিনায় অপেক্ষা করে ঢাকাই শাড়ি পরা, কপালে সিঁদুর দেওয়া সেই মেয়েটি।",
     "golden_pages": [
-      {"document": "Agardograph SCI266 Application of IRIG 106 Digital Data Standards for Flight Test final.pdf", "page": 2}
+      {"document": "পুনশ্চ.json", "page": 86},
+      {"document": "পুনশ্চ.json", "page": 87}
     ],
-    "query_type": "extractive"
+    "query_type": "abstractive"
   },
   {
     "id": "q017",
-    "question": "In the NASA/FAA/U.S. Army noise abatement flight test, which six helicopters were tested?",
-    "reference_answer": "Robinson R44, Robinson R66, Bell Helicopter 206L3, Bell Helicopter 407, Airbus AS350B3, and Airbus EC130B4.",
+    "question": "'১৪০০ সাল' কবিতায় কবি কাকে উদ্দেশ করে লিখেছেন, এবং তিনি কী পাঠাতে পারবেন না বলে আক্ষেপ করেছেন?",
+    "reference_answer": "কবি লিখেছেন শতবর্ষ পরের সেই পাঠককে, যে কৌতূহলভরে তাঁর কবিতা পড়বে ('আজি হতে শতবর্ষ পরে')। তিনি আক্ষেপ করেন যে আজকের বসন্ত-প্রভাতের আনন্দ — আজকের কোনো ফুল, পাখির গান বা রক্তরাগ — তিনি সেই পাঠকের হাতে পাঠাতে পারবেন না। তবু তিনি পাঠককে কল্পনায় শতবর্ষ আগের ফাল্গুনদিনের কথা ভাবতে বলেন এবং নিজের বসন্তের আনন্দ-অভিবাদন সেই সময়ের নতুন কবির হাতে পাঠিয়ে দেন।",
     "golden_pages": [
-      {"document": "Noise Abatement Flight Test Data Report.pdf", "page": 46}
+      {"document": "চিত্রা.json", "page": 96},
+      {"document": "চিত্রা.json", "page": 97}
     ],
-    "query_type": "extractive"
+    "query_type": "abstractive"
   },
   {
     "id": "q018",
-    "question": "What sample rate and bit resolution did the NASA LaRC Wireless Acoustic Measurement System (WAMS) use to record acoustic data during the noise abatement flight test?",
-    "reference_answer": "25,000 samples per second with 16-bit resolution.",
+    "question": "'কৃষ্ণকলি' কবিতার ধ্রুবপদ (বারবার ফিরে আসা পঙ্‌ক্তি) কী, এবং কবি মেয়েটিকে কোন মাঠে দেখেছিলেন?",
+    "reference_answer": "ধ্রুবপদটি হল: 'কালো? তা সে যতই কালো হোক, দেখেছি তার কালো হরিণ-চোখ।' কবি মেয়েটিকে মেঘলা দিনে ময়নাপাড়ার মাঠে দেখেছিলেন।",
     "golden_pages": [
-      {"document": "Noise Abatement Flight Test Data Report.pdf", "page": 48}
+      {"document": "ক্ষণিকা.json", "page": 98},
+      {"document": "ক্ষণিকা.json", "page": 99}
     ],
     "query_type": "extractive"
   },
   {
     "id": "q019",
-    "question": "Where were the R44/R66 forward-flight noise tests conducted, and where were the AS350B3, EC130B4, Bell 407, and 206L3 tests conducted?",
-    "reference_answer": "The R44 and R66 were flown at Eglin AFB Test Range C62 (Lat. 30.646788, Lon. -86.227224); the AS350B3, EC130B4, Bell 407, and 206L3 were tested at Amedee Army Airfield (Lat. 40.26327596, Lon. -120.15896670).",
+    "question": "'জুতা-আবিষ্কার' কবিতায় রাজার পায়ে ধুলা লাগা বন্ধ করতে পণ্ডিতেরা প্রথমে কতগুলি ঝাঁটা কিনেছিলেন এবং কত ভিস্তি নামিয়েছিলেন?",
+    "reference_answer": "তাঁরা সাড়ে সতেরো লক্ষ ঝাঁটা কিনেছিলেন — তাতে ধুলায় দেশ ভরে যায়। তারপর একুশ লাখ ভিস্তি মশক কাঁখে জল ঢালতে ছোটে — তাতে পুকুর-বিল শুকিয়ে যায়, দেশ কাদায় ভরে যায় এবং সর্দিজ্বরে উজাড় হয়।",
     "golden_pages": [
-      {"document": "Noise Abatement Flight Test Data Report.pdf", "page": 46}
+      {"document": "কল্পনা.json", "page": 37}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q020",
+    "question": "'জুতা-আবিষ্কার' কবিতায় রাজা হবুর সমস্যার শেষ পর্যন্ত কে এবং কীভাবে সমাধান করেছিল?",
+    "reference_answer": "সভাসদেরা সারা পৃথিবী চামড়া দিয়ে মুড়ে দেওয়ার প্রস্তাব দেন, কিন্তু অত চামার বা চামড়া মেলে না। তখন বৃদ্ধ চামার-কুলপতি ঈষৎ হেসে বলেন, 'নিজের দুটি চরণ ঢাকো, তবে ধরণী আর ঢাকিতে নাহি হবে।' তিনি রাজার পা চামড়ায় ঢেকে দেন — সেদিন থেকে জুতা পরা শুরু হয়, গোবু মন্ত্রী বাঁচেন এবং পৃথিবী রক্ষা পায়।",
+    "golden_pages": [
+      {"document": "কল্পনা.json", "page": 38},
+      {"document": "কল্পনা.json", "page": 39}
     ],
     "query_type": "abstractive"
+  },
+  {
+    "id": "q021",
+    "question": "'দেবতার গ্রাস' কবিতায় মৈত্রমহাশয় কোথায় তীর্থযাত্রায় যাচ্ছিলেন, এবং মোক্ষদা তার ছেলে রাখালকে কার কাছে রেখে যেতে চেয়েছিল?",
+    "reference_answer": "মৈত্রমহাশয় তীর্থস্নানের জন্য সাগরসংগমে যাচ্ছিলেন। বিধবা মোক্ষদা তার নাবালক ছেলে রাখালকে তার মাসি অন্নদার কাছে রেখে যেতে চেয়েছিল, যে রাখালকে জন্মের পর থেকে নিজের শিশুর সঙ্গে স্তন দিয়ে মানুষ করেছিল।",
+    "golden_pages": [
+      {"document": "কাহিনী.json", "page": 10}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q022",
+    "question": "'দেবতার গ্রাস' কবিতার শেষে রাখাল ও মৈত্রমহাশয়ের কী পরিণতি হয়?",
+    "reference_answer": "ঝড়ের সময় মাঝিরা রোষবশে মোক্ষদার বলা কথাকে ('চল্‌ তোরে দিয়ে আসি সাগরের জলে') দেবতার দাবি মনে করে রাখালকে মায়ের বুক থেকে ছিনিয়ে নিয়ে সাগরে ফেলে দেয়। মৈত্র চোখ বুজে কানে হাত দিয়ে ছিলেন, কিন্তু রাখালের 'মাসি! মাসি!' আর্তনাদ শুনে 'রাখ্‌ রাখ্‌' বলে চিৎকার করে ওঠেন। রাখাল তরঙ্গে ডুবে যায়; 'ফিরায়ে আনিব তোরে' বলে মৈত্র জলে ঝাঁপ দেন এবং আর ওঠেন না।",
+    "golden_pages": [
+      {"document": "কাহিনী.json", "page": 14},
+      {"document": "কাহিনী.json", "page": 15}
+    ],
+    "query_type": "abstractive"
+  },
+  {
+    "id": "q023",
+    "question": "'পলাতকা' কাব্যগ্রন্থের 'ফাঁকি' কবিতায় বিনু রুক্‌মিণীর জন্য কত টাকা দিতে বলেছিল, কথক আসলে কত দিয়েছিলেন, এবং পরে কেন তিনি অনুতপ্ত হন?",
+    "reference_answer": "বিলাসপুর স্টেশনে বিনু রেলের কুলির স্ত্রী রুক্‌মিণীর মেয়ের বিয়ের গয়নার জন্য পঁচিশ টাকা দিতে বলেছিল। কথক আড়ালে রুক্‌মিণীকে ধমক দিয়ে মাত্র দু-টাকা দিয়ে বিদায় করেন। দু-মাস পরে বিনু মারা যায়; বিনুর শেষ দুই মাসের অর্ঘ্যে এই 'পঁচিশ টাকার ফাঁকি' থেকে যায়। ফিরে এসে কথক বিলাসপুরে রুক্‌মিণীকে (ঝামরু কুলির বউ) খুঁজলেও আর তাকে পান না — তারা মাসখানেক আগে কোথায় চলে গেছে কেউ জানে না।",
+    "golden_pages": [
+      {"document": "পলাতকা.json", "page": 13},
+      {"document": "পলাতকা.json", "page": 14},
+      {"document": "পলাতকা.json", "page": 15}
+    ],
+    "query_type": "abstractive"
+  },
+  {
+    "id": "q024",
+    "question": "গীতাঞ্জলির 'হে মোর দুর্ভাগা দেশ' কবিতায় বারবার ফিরে আসা সতর্কবাণীটি কী?",
+    "reference_answer": "সতর্কবাণীটি হল: 'অপমানে হতে হবে তাহাদের সবার সমান' — অর্থাৎ দেশ যাদের মানুষের অধিকার থেকে বঞ্চিত ও অপমান করেছে, অপমানেই তাকে তাদের সবার সমান হতে হবে।",
+    "golden_pages": [
+      {"document": "গীতাঞ্জলি.json", "page": 103}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q025",
+    "question": "গীতাঞ্জলির 'যেথায় থাকে সবার অধম দীনের হতে দীন' কবিতা অনুসারে ঈশ্বরের চরণ কোথায় বিরাজ করে?",
+    "reference_answer": "ঈশ্বরের চরণ বিরাজ করে যেখানে সবার অধম, দীনের চেয়েও দীন মানুষেরা থাকে — 'সবার পিছে, সবার নীচে, সব-হারাদের মাঝে'। কবির আক্ষেপ, তাঁর প্রণাম ও হৃদয় অহংকারবশে সেখানে নামতে পারে না।",
+    "golden_pages": [
+      {"document": "গীতাঞ্জলি.json", "page": 102}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q026",
+    "question": "'নির্ঝরের স্বপ্নভঙ্গ' কবিতায় নির্ঝরের ঘুম কীসে ভাঙে, এবং জেগে উঠে সে নিজেকে কোথায় দেখে?",
+    "reference_answer": "প্রভাতে দূর আকাশ থেকে ভেসে আসা প্রভাতবিহগের গান এবং পথহারা রবিকর (সূর্যের কিরণ) গুহার অন্ধকারে প্রবেশ করে নির্ঝরের প্রাণ জাগিয়ে তোলে। জেগে উঠে সে দেখে চারদিকে পাষাণে রচিত ঘোর কারাগার — সে আঁধারে নিজের মধ্যেই বাঁধা পড়ে আছে।",
+    "golden_pages": [
+      {"document": "প্রভাতসংগীত.json", "page": 6},
+      {"document": "প্রভাতসংগীত.json", "page": 7}
+    ],
+    "query_type": "abstractive"
+  },
+  {
+    "id": "q027",
+    "question": "'ভানুসিংহ ঠাকুরের পদাবলী'র 'মরণ রে' পদে রাধা মৃত্যুকে কার সঙ্গে তুলনা করেছেন?",
+    "reference_answer": "রাধা মৃত্যুকে শ্যামের (কৃষ্ণের) সঙ্গে তুলনা করে বলেছেন, 'মরণ রে, তুঁহু মম শ্যামসমান' — নিষ্ঠুর মাধব তাঁকে ভুলে গেলেও মৃত্যু তাঁকে ছাড়বে না, তাই মৃত্যুকেই তিনি আহ্বান করেন।",
+    "golden_pages": [
+      {"document": "ভানুসিংহ_ঠাকুরের_পদাবলী.json", "page": 12}
+    ],
+    "query_type": "extractive"
+  },
+  {
+    "id": "q028",
+    "question": "'শেষ লেখা'র 'প্রথম দিনের সূর্য' কবিতায় প্রথম ও শেষ সূর্য কী প্রশ্ন করেছিল, এবং তার কি উত্তর মিলেছিল?",
+    "reference_answer": "সত্তার নতুন আবির্ভাবে প্রথম দিনের সূর্য প্রশ্ন করেছিল, 'কে তুমি?' — উত্তর মেলেনি। বছরের পর বছর কেটে গেলে দিনের শেষ সূর্য পশ্চিমসাগরতীরে নিস্তব্ধ সন্ধ্যায় একই প্রশ্ন করে — 'কে তুমি?' — কিন্তু সেও উত্তর পায়নি।",
+    "golden_pages": [
+      {"document": "শেষ_লেখা.json", "page": 4}
+    ],
+    "query_type": "abstractive"
+  },
+  {
+    "id": "q029",
+    "question": "'শেষ লেখা'র 'তোমার সৃষ্টির পথ রেখেছ আকীর্ণ করি' কবিতা অনুসারে কে ছলনাময়ীর হাত থেকে শান্তির অক্ষয় অধিকার পায়?",
+    "reference_answer": "যে অনায়াসে ছলনা সহ্য করতে পেরেছে, সে-ই ছলনাময়ীর হাত থেকে শান্তির অক্ষয় অধিকার পায়। বাইরে কুটিল হলেও যার অন্তর ঋজু ও সহজ বিশ্বাসে উজ্জ্বল, সে আপন আলোকে সত্যকে পায় এবং কোনো প্রবঞ্চনা তাকে ঠকাতে পারে না।",
+    "golden_pages": [
+      {"document": "শেষ_লেখা.json", "page": 6}
+    ],
+    "query_type": "extractive"
   }
 ]
