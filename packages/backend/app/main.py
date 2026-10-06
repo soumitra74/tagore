@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 import re
@@ -82,6 +83,15 @@ for _logger_name in ("uvicorn.access", "uvicorn.error", ""):
     logging.getLogger(_logger_name).addHandler(_rca_file_handler)
 
 
+async def _warm_up_ner(app: FastAPI) -> None:
+    try:
+        await app.state.ner.warm_up()
+    except asyncio.CancelledError:
+        raise
+    except Exception:
+        logging.getLogger(__name__).exception("NER warm-up failed")
+
+
 def create_app() -> FastAPI:
     app = FastAPI(title="Tagore RAG API")
     app.add_middleware(
@@ -119,7 +129,12 @@ def create_app() -> FastAPI:
         app.state.eval_jobs = {}
         app.state.judge = None
         app.state.ner = NERService()
-        await app.state.ner.warm_up()
+        # Model load downloads weights and can take about a minute. Awaiting it
+        # here leaves the reloader accepting TCP connections and then closing
+        # them with an empty reply, which the browser reports as "Failed to fetch".
+        # Load in the background so /api/documents and the rest of the API respond
+        # immediately; the first NER call still waits on the same load.
+        app.state.ner_warm_up_task = asyncio.create_task(_warm_up_ner(app))
         app.state.rca_provider = RcaSupervisorProvider(settings)
         app.state.ingestion_in_progress = False
         # Counted (not boolean) so it can be compared against the
@@ -129,6 +144,9 @@ def create_app() -> FastAPI:
 
     @app.on_event("shutdown")
     async def shutdown() -> None:
+        warm_up_task = getattr(app.state, "ner_warm_up_task", None)
+        if warm_up_task is not None and not warm_up_task.done():
+            warm_up_task.cancel()
         await app.state.db.close()
 
     return app
