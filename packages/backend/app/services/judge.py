@@ -25,6 +25,7 @@ class AnthropicCompletionProvider:
             model=self._model,
             max_tokens=1024,
             temperature=self._temperature,
+            thinking={"type": "disabled"},
             messages=[{"role": "user", "content": prompt}],
         )
         return LLMResponse(
@@ -44,6 +45,8 @@ class OpenAICompletionProvider:
         response = await self._client.chat.completions.create(
             model=self._model,
             temperature=self._temperature,
+            # gpt-6 only accepts a non-default temperature when reasoning is off.
+            reasoning_effort="none",
             messages=[{"role": "user", "content": prompt}],
         )
         usage = response.usage

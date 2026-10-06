@@ -20,6 +20,7 @@ class AnthropicCompletionProvider:
         response = await self._client.messages.create(
             model=self._model,
             max_tokens=1024,
+            thinking={"type": "disabled"},
             messages=[{"role": "user", "content": prompt}],
         )
         return response.content[0].text

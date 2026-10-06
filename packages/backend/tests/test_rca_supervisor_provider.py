@@ -25,6 +25,7 @@ async def test_send_calls_messages_create_with_model_and_tools(monkeypatch):
         model="claude-sonnet-5",
         max_tokens=2048,
         temperature=0.7,
+        thinking={"type": "disabled"},
         system="You are a helper.",
         messages=messages,
         tools=tools,

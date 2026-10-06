@@ -20,6 +20,7 @@ class RcaSupervisorProvider:
             model=self._model,
             max_tokens=2048,
             temperature=self._temperature,
+            thinking={"type": "disabled"},
             system=system,
             messages=messages,
             tools=tools,
