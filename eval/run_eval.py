@@ -15,7 +15,7 @@ EVAL_DIR = Path(__file__).resolve().parent
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Evaluate the PDF RAG backend against a golden QA dataset."
+        description="Evaluate the Tagore RAG backend against a golden QA dataset."
     )
     parser.add_argument("--dataset", default=str(EVAL_DIR / "golden_qa.json"))
     parser.add_argument("--api-base-url", default="http://localhost:9099")

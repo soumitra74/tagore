@@ -65,7 +65,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>PDF RAG</h1>
+      <h1>Tagore RAG</h1>
       <p>Backend status: {backendStatus}</p>
       <nav className="tabs">
         {TABS.map((tab) => (

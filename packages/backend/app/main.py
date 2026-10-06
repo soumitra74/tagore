@@ -83,7 +83,7 @@ for _logger_name in ("uvicorn.access", "uvicorn.error", ""):
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="PDF RAG API")
+    app = FastAPI(title="Tagore RAG API")
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
